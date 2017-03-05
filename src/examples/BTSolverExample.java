@@ -18,7 +18,7 @@ public class BTSolverExample {
 		
 		solver.setConsistencyChecks(ConsistencyCheck.ForwardChecking);
 		solver.setValueSelectionHeuristic(ValueSelectionHeuristic.None);
-		solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.Degree);
+		solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.None);
 		
 		Thread t1 = new Thread(solver);
 		try
