@@ -1,4 +1,5 @@
 package cspSolver;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -161,11 +162,26 @@ public class BTSolver implements Runnable{
 	}
 	
 	/**
-	 * TODO: Implement forward checking. 
+	 * TODO: forwardChecking
 	 */
 	private boolean forwardChecking()
 	{
-		return false;
+		for(Variable v : network.getVariables())
+		{
+			if(v.isAssigned())
+			{
+				for(Variable vOther : network.getNeighborsOfVariable(v))
+				{
+					if (v.getAssignment() == vOther.getAssignment())
+					{
+						return false;
+					}
+					vOther.removeValueFromDomain(v.getAssignment());
+					
+				}
+			}
+		}
+		return true;
 	}
 	
 	/**
@@ -214,21 +230,56 @@ public class BTSolver implements Runnable{
 	}
 
 	/**
-	 * TODO: Implement MRV heuristic
+	 * TODO: MRV
 	 * @return variable with minimum remaining values that isn't assigned, null if all variables are assigned. 
 	 */
 	private Variable getMRV()
 	{
-		return null;
+		Variable temp = null;
+		int minimum = Integer.MAX_VALUE;
+		for(Variable v : network.getVariables())
+		{
+			if(!v.isAssigned() && v.size() < minimum )
+			{
+				temp = v;
+				minimum = v.size();
+			}
+		}
+		if (temp != null)
+			System.out.println(temp.toString());
+		return temp;
 	}
 	
 	/**
-	 * TODO: Implement Degree heuristic
+	 * TODO: DEGREE
 	 * @return variable constrained by the most unassigned variables, null if all variables are assigned.
 	 */
 	private Variable getDegree()
 	{
-		return null;
+		Variable temp = null;
+		int maximum = 0;
+		for(Variable v : network.getVariables())
+		{
+			if(!v.isAssigned())
+			{
+				int max = 0;
+				for(Variable vOther : network.getNeighborsOfVariable(v))
+				{
+					if (!vOther.isAssigned())
+					{
+						max++;
+					}
+				}
+				if (max >= maximum)
+				{
+					temp = v;
+					maximum = max;
+				}
+			}
+		}
+		if (temp != null)
+			System.out.println(temp.toString() + " " + maximum);
+		return temp;
 	}
 	
 	/**
@@ -276,7 +327,28 @@ public class BTSolver implements Runnable{
 	 */
 	public List<Integer> getValuesLCVOrder(Variable v)
 	{
-		return null;
+		List<Integer> values = v.getDomain().getValues();
+			
+		Comparator<Integer> valueComparator = new Comparator<Integer>(){
+	
+			@Override
+			public int compare(Integer i1, Integer i2) {
+				Integer x = 0;
+				Integer y = 0;
+				
+				for(Variable vOther : network.getNeighborsOfVariable(v))
+				{
+					if (vOther.getDomain().contains(i1))
+						x++;
+					if (vOther.getDomain().contains(i2))
+						y++;				
+				}
+					
+				return x.compareTo(y);
+			}
+		};
+		Collections.sort(values, valueComparator);
+		return values;
 	}
 	/**
 	 * Called when solver finds a solution

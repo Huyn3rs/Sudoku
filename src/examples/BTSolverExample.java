@@ -16,9 +16,14 @@ public class BTSolverExample {
 		SudokuFile sf = SudokuBoardReader.readFile("ExampleSudokuFiles/PM1.txt");
 		BTSolver solver = new BTSolver(sf);
 		
-		solver.setConsistencyChecks(ConsistencyCheck.None);
+		solver.setConsistencyChecks(ConsistencyCheck.ForwardChecking);
 		solver.setValueSelectionHeuristic(ValueSelectionHeuristic.LeastConstrainingValue);
 		solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.MinimumRemainingValue);
+		
+		
+//		solver.setConsistencyChecks(ConsistencyCheck.None);
+//		solver.setValueSelectionHeuristic(ValueSelectionHeuristic.None);
+//		solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.None);
 		
 		Thread t1 = new Thread(solver);
 		try
