@@ -13,12 +13,12 @@ public class BTSolverExample {
 	public static void main(String[] args)
 	{
 //		SudokuFile sf = SudokuBoardGenerator.generateBoard(9, 3, 3, 12);
-		SudokuFile sf = SudokuBoardReader.readFile("ExampleSudokuFiles/PE1.txt");
+		SudokuFile sf = SudokuBoardReader.readFile("ExampleSudokuFiles/PM1.txt");
 		BTSolver solver = new BTSolver(sf);
 		
-		solver.setConsistencyChecks(ConsistencyCheck.ForwardChecking);
-		solver.setValueSelectionHeuristic(ValueSelectionHeuristic.None);
-		solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.None);
+		solver.setConsistencyChecks(ConsistencyCheck.None);
+		solver.setValueSelectionHeuristic(ValueSelectionHeuristic.LeastConstrainingValue);
+		solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.MinimumRemainingValue);
 		
 		Thread t1 = new Thread(solver);
 		try
