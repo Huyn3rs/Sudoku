@@ -42,7 +42,7 @@ public class runStats {
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append(puzzleID + ":");
-		sb.append(runtime + " ms, " + numAssignments + " assignments, " + numBacktracks + " backtracks" + (isSolution?"":" Not a Solution"));
+		sb.append(runtime + " ms, " + numAssignments + " assignments, " + numBacktracks + " backtracks, " + (isSolution?" Solved ":" Not a Solution"));
 		return sb.toString();
 	}
 }
