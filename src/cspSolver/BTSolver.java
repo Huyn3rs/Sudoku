@@ -296,8 +296,8 @@ public class BTSolver implements Runnable{
 				minimum = v.size();
 			}
 		}
-		if (temp != null)
-			System.out.println(temp.toString());
+//		if (temp != null)
+//			System.out.println(temp.toString());
 		return temp;
 	}
 	
