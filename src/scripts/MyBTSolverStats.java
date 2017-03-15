@@ -107,7 +107,6 @@ public class MyBTSolverStats {
 			fw.write(sep);
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -146,7 +145,6 @@ public class MyBTSolverStats {
 			fw.write(sep);
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -176,7 +174,6 @@ public class MyBTSolverStats {
 			
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -207,7 +204,6 @@ public class MyBTSolverStats {
 			fw.close();
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

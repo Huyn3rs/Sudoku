@@ -193,7 +193,6 @@ public class BTSolver implements Runnable{
 	 * TODO: Implement forward checking. 
 	 */
 	
-	// Fix this!!
 	private boolean forwardChecking()
 	{
 		for(Variable v : network.getVariables())
