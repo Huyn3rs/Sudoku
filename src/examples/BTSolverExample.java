@@ -13,8 +13,8 @@ public class BTSolverExample {
 
 	public static void main(String[] args)
 	{
-//		SudokuFile sf = SudokuBoardGenerator.generateBoard(9, 3, 3, 12);
-		SudokuFile sf = SudokuBoardReader.readFile("ExampleSudokuFiles/PM1.txt");
+		SudokuFile sf = SudokuBoardGenerator.generateBoard(12, 3, 4, 12);
+//		SudokuFile sf = SudokuBoardReader.readFile("ExampleSudokuFiles/PH1.txt");
 		BTSolver solver = new BTSolver(sf);
 		
 		solver.setConsistencyChecks(ConsistencyCheck.ForwardChecking);
@@ -32,7 +32,7 @@ public class BTSolverExample {
 		try
 		{
 			t1.start();
-			t1.join(60000);
+			t1.join(0);
 			if(t1.isAlive())
 			{
 				t1.interrupt();
