@@ -500,6 +500,8 @@ public class BTSolver implements Runnable{
 		int N = sudokuGrid.getN();
 		int p = sudokuGrid.getP();
 		int q = sudokuGrid.getQ();
+	
+		
 		 for (int i = 0; i < N; i++) {
 
 		        int[] row = new int[N];
@@ -507,8 +509,9 @@ public class BTSolver implements Runnable{
 		        int[] column = board[i].clone();
 
 		        for (int j = 0; j < N; j ++) {
+		        	
 		            row[j] = board[j][i];
-		            square[j] = board[(i / q) * q + j / q][i * p % N + j % p];
+		            square[j] = board[(i / p) * p + j / q][i * q % N + j % q];
 		        }
 		        if (!(validate(column) && validate(row) && validate(square)))
 		            return false;

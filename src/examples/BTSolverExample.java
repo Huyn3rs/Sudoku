@@ -23,8 +23,8 @@ public class BTSolverExample {
 //		solver.setNakedConsistency(NakedCheck.None);
 		
 		solver.setConsistencyChecks(ConsistencyCheck.ForwardChecking);
-		solver.setValueSelectionHeuristic(ValueSelectionHeuristic.None);
-		solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.None);
+		solver.setValueSelectionHeuristic(ValueSelectionHeuristic.LeastConstrainingValue);
+		solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.MinimumRemainingValue);
 		solver.setNakedConsistency(NakedCheck.None);
 		
 		
