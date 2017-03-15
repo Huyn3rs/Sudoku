@@ -1,5 +1,5 @@
 package cspSolver;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -26,13 +26,15 @@ public class BTSolver implements Runnable{
 	private long startTime;
 	private long endTime;
 	
-	public enum VariableSelectionHeuristic 	{ None, MinimumRemainingValue, Degree };
-	public enum ValueSelectionHeuristic 		{ None, LeastConstrainingValue };
-	public enum ConsistencyCheck				{ None, ForwardChecking, ArcConsistency };
+	public enum VariableSelectionHeuristic 	{ None, MinimumRemainingValue, Degree }
+	public enum ValueSelectionHeuristic 		{ None, LeastConstrainingValue }
+	public enum ConsistencyCheck				{ None, ForwardChecking, ArcConsistency }
+        public enum NakedCheck    { None, NakedPairs, NakedTriples }
 	
 	private VariableSelectionHeuristic varHeuristics;
 	private ValueSelectionHeuristic valHeuristics;
 	private ConsistencyCheck cChecks;
+        private NakedCheck nCheck;
 	//===============================================================================
 	// Constructors
 	//===============================================================================
@@ -63,6 +65,11 @@ public class BTSolver implements Runnable{
 	{
 		this.cChecks = cc;
 	}
+
+        public void setNakedConsistency(NakedCheck nck)
+        {
+                this.nCheck = nck;
+        }
 	//===============================================================================
 	// Accessors
 	//===============================================================================
@@ -138,6 +145,27 @@ public class BTSolver implements Runnable{
 		}
 		return isConsistent;
 	}
+
+        /**
+	 * Checks whether the changes from the last time this method was called are consistent. 
+	 * @return true if consistent, false otherwise
+	 */
+	private boolean checkNakedConsistency()
+	{
+		boolean isConsistent = false;
+		switch(nCheck)
+		{
+		case None: 				isConsistent = true;
+		break;
+                case NakedPairs:    isConsistent = nakedPairs();
+                break;
+                case NakedTriples:    isConsistent = nakedTriples();
+                break;
+		default: 				isConsistent = true;
+		break;
+		}
+		return isConsistent;
+	}
 	
 	/**
 	 * default consistency check. Ensures no two variables are assigned to the same value.
@@ -162,8 +190,10 @@ public class BTSolver implements Runnable{
 	}
 	
 	/**
-	 * TODO: forwardChecking
+	 * TODO: Implement forward checking. 
 	 */
+	
+	
 	private boolean forwardChecking()
 	{
 		for(Variable v : network.getVariables())
@@ -171,14 +201,19 @@ public class BTSolver implements Runnable{
 			if(v.isAssigned())
 			{
 				for(Variable vOther : network.getNeighborsOfVariable(v))
-				{
-					if (v.getAssignment() == vOther.getAssignment())
+				{	
+					if (vOther.getDomain().contains(v.getAssignment()))		
+						vOther.removeValueFromDomain(v.getAssignment());
+					
+					if (vOther.size() == 0)
 					{
 						return false;
 					}
-					vOther.removeValueFromDomain(v.getAssignment());
 					
 				}
+				boolean check = assignmentsCheck();
+				if (check == false)
+					return false;
 			}
 		}
 		return true;
@@ -191,7 +226,23 @@ public class BTSolver implements Runnable{
 	{
 		return false;
 	}
+
+	/**
+	 * TODO: Implement naked pairs. 
+	 */
+	private boolean nakedPairs()
+	{
+		return false;
+	}
 	
+	/**
+	 * TODO: Implement naked triples.
+	 */
+	private boolean nakedTriples()
+	{
+		return false;
+	}
+
 	/**
 	 * Selects the next variable to check.
 	 * @return next variable to check. null if there are no more variables to check. 
@@ -230,7 +281,7 @@ public class BTSolver implements Runnable{
 	}
 
 	/**
-	 * TODO: MRV
+	 * TODO: Implement MRV heuristic
 	 * @return variable with minimum remaining values that isn't assigned, null if all variables are assigned. 
 	 */
 	private Variable getMRV()
@@ -245,19 +296,19 @@ public class BTSolver implements Runnable{
 				minimum = v.size();
 			}
 		}
-		if (temp != null)
-			System.out.println(temp.toString());
+//		if (temp != null)
+//			System.out.println(temp.toString());
 		return temp;
 	}
 	
 	/**
-	 * TODO: DEGREE
+	 * TODO: Implement Degree heuristic
 	 * @return variable constrained by the most unassigned variables, null if all variables are assigned.
 	 */
 	private Variable getDegree()
 	{
 		Variable temp = null;
-		int maximum = 0;
+		int maximum = -1;
 		for(Variable v : network.getVariables())
 		{
 			if(!v.isAssigned())
@@ -265,12 +316,12 @@ public class BTSolver implements Runnable{
 				int max = 0;
 				for(Variable vOther : network.getNeighborsOfVariable(v))
 				{
-					if (!vOther.isAssigned())
+					if (!vOther.isAssigned()) // if vOther is not assigned
 					{
 						max++;
 					}
 				}
-				if (max >= maximum)
+				if (max > maximum)
 				{
 					temp = v;
 					maximum = max;
@@ -328,7 +379,7 @@ public class BTSolver implements Runnable{
 	public List<Integer> getValuesLCVOrder(Variable v)
 	{
 		List<Integer> values = v.getDomain().getValues();
-			
+		
 		Comparator<Integer> valueComparator = new Comparator<Integer>(){
 	
 			@Override
@@ -422,7 +473,7 @@ public class BTSolver implements Runnable{
 				//check a value
 				v.updateDomain(new Domain(i));
 				numAssignments++;
-				boolean isConsistent = checkConsistency();
+				boolean isConsistent = checkConsistency() && checkNakedConsistency();
 				
 				//move to the next assignment
 				if(isConsistent)
@@ -443,6 +494,37 @@ public class BTSolver implements Runnable{
 				}
 			}	
 		}	
+	}
+	public boolean checkSolution()
+	{
+		int[][] board = sudokuGrid.getBoard();
+		int N = sudokuGrid.getN();
+		int p = sudokuGrid.getP();
+		int q = sudokuGrid.getQ();
+		 for (int i = 0; i < N; i++) {
+
+		        int[] row = new int[N];
+		        int[] square = new int[N];
+		        int[] column = board[i].clone();
+
+		        for (int j = 0; j < N; j ++) {
+		            row[j] = board[j][i];
+		            square[j] = board[(i / q) * q + j / q][i * p % N + j % p];
+		        }
+		        if (!(validate(column) && validate(row) && validate(square)))
+		            return false;
+		    }
+		    return true;
+		
+	}
+	private boolean validate(int[] check) {
+	    int i = 0;
+	    Arrays.sort(check);
+	    for (int number : check) {
+	        if (number != ++i)
+	            return false;
+	    }
+	    return true;
 	}
 
 	@Override

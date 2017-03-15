@@ -10,16 +10,17 @@ import sudoku.SudokuBoardReader;
 import sudoku.SudokuFile;
 import cspSolver.BTSolver;
 import cspSolver.BTSolver.ConsistencyCheck;
+import cspSolver.BTSolver.NakedCheck;
 import cspSolver.BTSolver.ValueSelectionHeuristic;
 import cspSolver.BTSolver.VariableSelectionHeuristic;
 
 public class BTSolverStats {
 
 	// Change these to test different configurations for the solver. 
-	static ConsistencyCheck cc = ConsistencyCheck.None;
-	static ValueSelectionHeuristic valsh = ValueSelectionHeuristic.None;
-	static VariableSelectionHeuristic varsh = VariableSelectionHeuristic.None;
-	
+	static ConsistencyCheck cc = ConsistencyCheck.ForwardChecking;
+	static ValueSelectionHeuristic valsh = ValueSelectionHeuristic.LeastConstrainingValue;
+	static VariableSelectionHeuristic varsh = VariableSelectionHeuristic.MinimumRemainingValue;
+	static NakedCheck nc = NakedCheck.None;
 	public static List<SudokuFile> getPuzzlesFromFolder(File folder) {
 	    List<SudokuFile> puzzles = new ArrayList<SudokuFile>();
 		for (File fileEntry : folder.listFiles()) {
@@ -37,6 +38,7 @@ public class BTSolverStats {
 		solver.setConsistencyChecks(cc);
 		solver.setValueSelectionHeuristic(valsh);
 		solver.setVariableSelectionHeuristic(varsh);
+		solver.setNakedConsistency(nc);
 		
 		Thread t1 = new Thread(solver);
 		try
@@ -83,7 +85,7 @@ public class BTSolverStats {
 		List<SudokuFile> puzzles = getPuzzlesFromFolder(folder);
 		List<runStats> statistics = new ArrayList<runStats>();
 		
-		puzzles = puzzles.subList(0, 10);
+		puzzles = puzzles.subList(0, 51);
 		for(SudokuFile sf : puzzles)
 		{
 			BTSolver solver = new BTSolver(sf);

@@ -2,6 +2,7 @@ package examples;
 
 import cspSolver.BTSolver;
 import cspSolver.BTSolver.ConsistencyCheck;
+import cspSolver.BTSolver.NakedCheck;
 import cspSolver.BTSolver.ValueSelectionHeuristic;
 import cspSolver.BTSolver.VariableSelectionHeuristic;
 import sudoku.SudokuBoardGenerator;
@@ -19,11 +20,13 @@ public class BTSolverExample {
 		solver.setConsistencyChecks(ConsistencyCheck.ForwardChecking);
 		solver.setValueSelectionHeuristic(ValueSelectionHeuristic.LeastConstrainingValue);
 		solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.MinimumRemainingValue);
-		
+		solver.setNakedConsistency(NakedCheck.None);
 		
 //		solver.setConsistencyChecks(ConsistencyCheck.None);
 //		solver.setValueSelectionHeuristic(ValueSelectionHeuristic.None);
 //		solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.None);
+//		solver.setNakedConsistency(None);
+		
 		
 		Thread t1 = new Thread(solver);
 		try
@@ -43,6 +46,11 @@ public class BTSolverExample {
 		{
 			solver.printSolverStats();
 			System.out.println(solver.getSolution());	
+			boolean hello = solver.checkSolution();
+			if (hello)
+				System.out.println("Solution is correct.");
+			else
+				System.out.println("Solution is not correct.");
 		}
 
 		else
