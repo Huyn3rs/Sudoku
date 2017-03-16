@@ -242,6 +242,8 @@ public class BTSolver implements Runnable{
 					if (y.getDomain().size() == 2 && !y.isAssigned()){
 						if (x.getDomain().getValues().containsAll(y.getDomain().getValues())){
 							skip = y;
+							System.out.println(x.toString());
+							System.out.println(y.toString());
 							for (Variable v: network.getVariables()){
 								if (!v.isAssigned() && 
 									network.getNeighborsOfVariable(x).contains(v) &&
