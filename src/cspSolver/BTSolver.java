@@ -193,6 +193,7 @@ public class BTSolver implements Runnable{
 	 * TODO: Implement forward checking. 
 	 */
 	
+	// Fix this!!
 	private boolean forwardChecking()
 	{
 		for(Variable v : network.getVariables())
@@ -223,6 +224,7 @@ public class BTSolver implements Runnable{
 	 */
 	private boolean arcConsistency()
 	{
+		
 		return false;
 	}
 
@@ -231,7 +233,36 @@ public class BTSolver implements Runnable{
 	 */
 	private boolean nakedPairs()
 	{
-		return false;
+		
+		for (Variable v: network.getVariables()){
+			if (v.getDomain().size() == 2 && !v.isAssigned())
+			{
+				for (Variable y: this.network.getNeighborsOfVariable(v))
+				{
+					if (v == y){
+						continue;
+					}
+					if (y.getDomain().size() == 2 && !y.isAssigned()){
+						if (v.getDomain().getValues().containsAll(y.getDomain().getValues()) && y.getDomain().getValues().containsAll(v.getDomain().getValues())){
+							
+							for (Variable x: network.getVariables()){
+								if (!x.isAssigned() && 
+										this.network.getNeighborsOfVariable(v).contains(x) &&
+										this.network.getNeighborsOfVariable(y).contains(x)
+										){
+									
+									x.removeValueFromDomain(v.getDomain().getValues().get(0));
+									x.removeValueFromDomain(v.getDomain().getValues().get(1));
+								}
+							}
+						}
+					}
+				}
+				
+			}
+			
+		}
+		return assignmentsCheck();
 	}
 	
 	/**
@@ -375,7 +406,7 @@ public class BTSolver implements Runnable{
 	/**
 	 * TODO: LCV heuristic
 	 */
-	public List<Integer> getValuesLCVOrder(Variable v)
+	public List<Integer> getValuesLCVOrder(final Variable v)
 	{
 		List<Integer> values = v.getDomain().getValues();
 		
@@ -500,8 +531,6 @@ public class BTSolver implements Runnable{
 		int N = sudokuGrid.getN();
 		int p = sudokuGrid.getP();
 		int q = sudokuGrid.getQ();
-	
-		
 		 for (int i = 0; i < N; i++) {
 
 		        int[] row = new int[N];
@@ -509,9 +538,8 @@ public class BTSolver implements Runnable{
 		        int[] column = board[i].clone();
 
 		        for (int j = 0; j < N; j ++) {
-		        	
 		            row[j] = board[j][i];
-		            square[j] = board[(i / p) * p + j / q][i * q % N + j % q];
+		            square[j] = board[(i / q) * q + j / q][i * p % N + j % p];
 		        }
 		        if (!(validate(column) && validate(row) && validate(square)))
 		            return false;
