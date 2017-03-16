@@ -230,26 +230,25 @@ public class BTSolver implements Runnable{
 	 */
 	private boolean nakedPairs()
 	{
-		
-		for (Variable v: network.getVariables()){
-			if (v.getDomain().size() == 2 && !v.isAssigned())
+		Variable skip = null;
+		for (Variable x: network.getVariables())
+		{
+			if (skip == x)
+				continue;
+			if (x.getDomain().size() == 2 && !x.isAssigned())
 			{
-				for (Variable y: this.network.getNeighborsOfVariable(v))
+				for (Variable y: network.getNeighborsOfVariable(x))
 				{
-					if (v == y){
-						continue;
-					}
 					if (y.getDomain().size() == 2 && !y.isAssigned()){
-						if (v.getDomain().getValues().containsAll(y.getDomain().getValues()) && y.getDomain().getValues().containsAll(v.getDomain().getValues())){
-							
-							for (Variable x: network.getVariables()){
-								if (!x.isAssigned() && 
-										this.network.getNeighborsOfVariable(v).contains(x) &&
-										this.network.getNeighborsOfVariable(y).contains(x)
-										){
-									
-									x.removeValueFromDomain(v.getDomain().getValues().get(0));
-									x.removeValueFromDomain(v.getDomain().getValues().get(1));
+						if (x.getDomain().getValues().containsAll(y.getDomain().getValues())){
+							skip = y;
+							for (Variable v: network.getVariables()){
+								if (!v.isAssigned() && 
+									network.getNeighborsOfVariable(x).contains(v) &&
+									network.getNeighborsOfVariable(y).contains(v))
+								{
+									v.removeValueFromDomain(x.getDomain().getValues().get(0));
+									v.removeValueFromDomain(x.getDomain().getValues().get(1));
 								}
 							}
 						}
@@ -535,7 +534,7 @@ public class BTSolver implements Runnable{
 
 		        for (int j = 0; j < N; j ++) {
 		            row[j] = board[j][i];
-		            square[j] = board[(i / q) * q + j / q][i * p % N + j % p];
+		            square[j] = board[(i / p) * p + j / q][i * q % N + j % q];
 		        }
 		        if (!(validate(column) && validate(row) && validate(square)))
 		            return false;
