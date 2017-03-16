@@ -17,14 +17,14 @@ public class BTSolverExample {
 		SudokuFile sf = SudokuBoardReader.readFile("ExampleSudokuFiles/PM1.txt");
 		BTSolver solver = new BTSolver(sf);
 		
-//		solver.setConsistencyChecks(ConsistencyCheck.ForwardChecking);
-//		solver.setValueSelectionHeuristic(ValueSelectionHeuristic.LeastConstrainingValue);
-//		solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.MinimumRemainingValue);
-//		solver.setNakedConsistency(NakedCheck.None);
+//		public enum VariableSelectionHeuristic 	{ None, MinimumRemainingValue, Degree }
+//		public enum ValueSelectionHeuristic 		{ None, LeastConstrainingValue }
+//		public enum ConsistencyCheck				{ None, ForwardChecking, ArcConsistency }
+//	    public enum NakedCheck    { None, NakedPairs, NakedTriples }
 		
 		solver.setConsistencyChecks(ConsistencyCheck.ForwardChecking);
 		solver.setValueSelectionHeuristic(ValueSelectionHeuristic.LeastConstrainingValue);
-		solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.MinimumRemainingValue);
+		solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.Degree);
 		solver.setNakedConsistency(NakedCheck.None);
 		
 		

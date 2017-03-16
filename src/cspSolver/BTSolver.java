@@ -211,9 +211,6 @@ public class BTSolver implements Runnable{
 					}
 					
 				}
-				boolean check = assignmentsCheck();
-				if (check == false)
-					return false;
 			}
 		}
 		return true;
@@ -326,8 +323,6 @@ public class BTSolver implements Runnable{
 				minimum = v.size();
 			}
 		}
-//		if (temp != null)
-//			System.out.println(temp.toString());
 		return temp;
 	}
 	
@@ -351,6 +346,7 @@ public class BTSolver implements Runnable{
 						max++;
 					}
 				}
+				
 				if (max > maximum)
 				{
 					temp = v;
@@ -358,8 +354,8 @@ public class BTSolver implements Runnable{
 				}
 			}
 		}
-		if (temp != null)
-			System.out.println(temp.toString() + " " + maximum);
+//		if (temp != null)
+//			System.out.println(temp.toString() + " " + maximum);
 		return temp;
 	}
 	
