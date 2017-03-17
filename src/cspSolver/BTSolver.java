@@ -1,7 +1,10 @@
 package cspSolver;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import sudoku.Converter;
@@ -193,7 +196,6 @@ public class BTSolver implements Runnable{
 	 * TODO: Implement forward checking. 
 	 */
 	
-	// Fix this!!
 	private boolean forwardChecking()
 	{
 		for(Variable v : network.getVariables())
@@ -219,10 +221,83 @@ public class BTSolver implements Runnable{
 	/**
 	 * TODO: Implement Maintaining Arc Consistency.
 	 */
+	private ArrayList<ArcPair> arcConsistency_createQueue()
+	{
+		ArrayList<ArcPair> l = new ArrayList<ArcPair>();
+		for (Variable v: network.getVariables())
+		{
+			if (!v.isAssigned())
+			{
+				for (Variable vOther: network.getNeighborsOfVariable(v))
+				{
+					if(v != vOther)
+					{
+						ArcPair ap = new ArcPair(v, vOther);
+						if (!l.contains(ap))
+							l.add(ap);
+					}
+				}
+			}
+		}
+		return l;
+	}
+	
+	private ArrayList<ArcPair> arcConsistency_addToQueue(ArcPair xy)
+	{
+		ArrayList<ArcPair> l = new ArrayList<ArcPair>();
+		Variable v = xy.getLeft();
+		for (Variable vOther: network.getNeighborsOfVariable(v))
+		{
+			if(vOther != xy.getRight())
+			{
+				ArcPair ap = new ArcPair(vOther, v);
+				if (!l.contains(ap))
+					l.add(ap);
+			}
+			
+		}
+		return l;
+	}
+	
+
+	private boolean arcReduce(ArcPair xy)
+	{
+		boolean change = false;
+		ArrayList<Integer> l = new ArrayList<Integer>();
+		for (Integer i: xy.getLeft().getDomain().getValues()) 
+			l.add(i);
+		
+		for(Integer i: l)
+		{
+		    Domain ydomain = xy.getRight().getDomain();
+			if (ydomain.getValues().contains(i) && ydomain.size() == 1)
+			{
+				xy.getLeft().removeValueFromDomain(i);
+				change = true;
+			}
+		}
+		return change;
+	}
+	
 	private boolean arcConsistency()
 	{
+	
+		ArrayList<ArcPair> al = arcConsistency_createQueue();
+		while(!al.isEmpty())
+		{
+			ArcPair xy = al.remove(0);
+			if (arcReduce(xy))
+			{
+				if (xy.getLeft().size() == 0)
+					return false;
+				else
+					al.addAll(arcConsistency_addToQueue(xy));
+			}
+			
+		}
 		
-		return false;
+		return assignmentsCheck();
+		
 	}
 
 	/**
@@ -242,8 +317,6 @@ public class BTSolver implements Runnable{
 					if (y.getDomain().size() == 2 && !y.isAssigned()){
 						if (x.getDomain().getValues().containsAll(y.getDomain().getValues())){
 							skip = y;
-							System.out.println(x.toString());
-							System.out.println(y.toString());
 							for (Variable v: network.getVariables()){
 								if (!v.isAssigned() && 
 									network.getNeighborsOfVariable(x).contains(v) &&
@@ -251,6 +324,11 @@ public class BTSolver implements Runnable{
 								{
 									v.removeValueFromDomain(x.getDomain().getValues().get(0));
 									v.removeValueFromDomain(x.getDomain().getValues().get(1));
+									
+								}
+								if (v.size() == 0)
+								{
+									return false;
 								}
 							}
 						}
@@ -260,16 +338,54 @@ public class BTSolver implements Runnable{
 			}
 			
 		}
-		return assignmentsCheck();
+		return true;
 	}
 	
 	/**
 	 * TODO: Implement naked triples.
 	 */
 	private boolean nakedTriples()
-	{
-		return false;
-	}
+    {
+		Variable skip1 = null, skip2 = null;
+        for (Variable v: network.getVariables())
+        {
+        	if (skip1 == v || skip2 == v)
+				continue;
+            if (v.getDomain().size() == 3 && !v.isAssigned())
+            {
+                for (Variable x: this.network.getNeighborsOfVariable(v)){
+                    if ((x.getDomain().size() == 2 || x.getDomain().size() == 3) && !x.isAssigned() && 
+                    		v.getDomain().getValues().containsAll(x.getDomain().getValues())){
+
+                        for (Variable y: this.network.getNeighborsOfVariable(v)){
+                            if ((y.getDomain().size() == 2 || y.getDomain().size() == 3) && 
+                            		!y.isAssigned() && y != x && y.getDomain().size() <= 3 && 
+                            		v.getDomain().getValues().containsAll(y.getDomain().getValues()) && 
+                            		network.getNeighborsOfVariable(x).contains(y))
+                            {
+                            	skip1 = x;
+                            	skip2 = y;
+                                for (Variable fa: network.getNeighborsOfVariable(v)){
+                                    if (!fa.isAssigned() && network.getNeighborsOfVariable(x).contains(fa) && network.getNeighborsOfVariable(y).contains(fa))
+                                    {
+                                        fa.removeValueFromDomain(v.getDomain().getValues().get(0));
+                                        fa.removeValueFromDomain(v.getDomain().getValues().get(1));
+                                        fa.removeValueFromDomain(v.getDomain().getValues().get(2));
+                                    }
+                                }
+                            }
+                            if (y.size() == 0)
+							{
+								return false;
+							}
+                        }
+                    }
+                }
+            }
+
+        }
+        return true;
+    }
 
 	/**
 	 * Selects the next variable to check.

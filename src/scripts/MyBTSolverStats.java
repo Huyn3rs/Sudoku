@@ -42,10 +42,15 @@ public class MyBTSolverStats {
 	}
 
 	// Change these to test different configurations for the solver. 
+	
+//	public enum VariableSelectionHeuristic 	{ None, MinimumRemainingValue, Degree }
+//	public enum ValueSelectionHeuristic 	{ None, LeastConstrainingValue }
+//	public enum ConsistencyCheck		    { None, ForwardChecking, ArcConsistency }
+//  public enum NakedCheck                  { None, NakedPairs, NakedTriples }
 	static ConsistencyCheck cc = ConsistencyCheck.ForwardChecking;
 	static ValueSelectionHeuristic valsh = ValueSelectionHeuristic.LeastConstrainingValue;
-	static VariableSelectionHeuristic varsh = VariableSelectionHeuristic.MinimumRemainingValue;
-	static NakedCheck nc = NakedCheck.None;
+	static VariableSelectionHeuristic varsh = VariableSelectionHeuristic.Degree;
+	static NakedCheck nc = NakedCheck.NakedTriples;
 	
 	public static List<SudokuFile> getPuzzlesFromFolder(File folder) {
 	    List<SudokuFile> puzzles = new ArrayList<SudokuFile>();
@@ -132,17 +137,21 @@ public class MyBTSolverStats {
 			}
 			System.out.println();
 			System.out.println("Solution found for " + totalSuccessful + "/" + totalPuzzles + "puzzles");
-			System.out.println("average runTime: " + (totalRunTime/totalSuccessful));
-			System.out.println("average number of assignments per puzzle: " + (totalAssignments/totalSuccessful));
-			System.out.println("average number of backtracks per puzzle: " + (totalBackTracks/totalSuccessful));
-			System.out.println();
 			
 			fw.write(sep);
 			fw.write("Solution found for " + totalSuccessful + "/" + totalPuzzles + "puzzles" + sep);
-			fw.write("average runTime: " + (totalRunTime/totalSuccessful) + sep);
-			fw.write("average number of assignments per puzzle: " + (totalAssignments/totalSuccessful) + sep);
-			fw.write("average number of backtracks per puzzle: " + (totalBackTracks/totalSuccessful) + sep);
-			fw.write(sep);
+			if (totalSuccessful != 0)
+			{
+				System.out.println("average runTime: " + (totalRunTime/totalSuccessful));
+				System.out.println("average number of assignments per puzzle: " + (totalAssignments/totalSuccessful));
+				System.out.println("average number of backtracks per puzzle: " + (totalBackTracks/totalSuccessful));
+				System.out.println();
+				
+				fw.write("average runTime: " + (totalRunTime/totalSuccessful) + sep);
+				fw.write("average number of assignments per puzzle: " + (totalAssignments/totalSuccessful) + sep);
+				fw.write("average number of backtracks per puzzle: " + (totalBackTracks/totalSuccessful) + sep);
+				fw.write(sep);
+			}
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -195,10 +204,8 @@ public class MyBTSolverStats {
 			writeHeuristics(fw);
 			
 			runTestAndRecord(fw, "Easy", easy);
-			runTestAndRecord(fw, "Easy", easy);
-			runTestAndRecord(fw, "Easy", easy);
-//			runTestAndRecord(fw, "Medium", medium);
-//			runTestAndRecord(fw, "Hard", hard);
+			runTestAndRecord(fw, "Medium", medium);
+			runTestAndRecord(fw, "Hard", hard);
 			
 			fw.flush();
 			fw.close();

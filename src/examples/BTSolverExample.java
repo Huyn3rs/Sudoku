@@ -14,7 +14,7 @@ public class BTSolverExample {
 	public static void main(String[] args)
 	{
 //		SudokuFile sf = SudokuBoardGenerator.generateBoard(12, 3, 4, 12);
-		SudokuFile sf = SudokuBoardReader.readFile("ExampleSudokuFiles/PM1.txt");
+		SudokuFile sf = SudokuBoardReader.readFile("ExampleSudokuFiles/PH2.txt");
 		BTSolver solver = new BTSolver(sf);
 		
 //		public enum VariableSelectionHeuristic 	{ None, MinimumRemainingValue, Degree }
@@ -22,16 +22,12 @@ public class BTSolverExample {
 //		public enum ConsistencyCheck				{ None, ForwardChecking, ArcConsistency }
 //	    public enum NakedCheck    { None, NakedPairs, NakedTriples }
 		
-//		solver.setConsistencyChecks(ConsistencyCheck.ForwardChecking);
-//		solver.setValueSelectionHeuristic(ValueSelectionHeuristic.LeastConstrainingValue);
-//		solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.MinimumRemainingValue);
-//		solver.setNakedConsistency(NakedCheck.NakedPairs);
+		solver.setConsistencyChecks(ConsistencyCheck.ArcConsistency);
+		solver.setValueSelectionHeuristic(ValueSelectionHeuristic.LeastConstrainingValue);
+		solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.MinimumRemainingValue);
+		solver.setNakedConsistency(NakedCheck.NakedTriples);
 		
-		solver.setConsistencyChecks(ConsistencyCheck.None);
-		solver.setValueSelectionHeuristic(ValueSelectionHeuristic.None);
-		solver.setVariableSelectionHeuristic(VariableSelectionHeuristic.Degree);
-		solver.setNakedConsistency(NakedCheck.None);
-		
+
 		
 		Thread t1 = new Thread(solver);
 		try
