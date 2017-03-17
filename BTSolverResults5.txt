@@ -1,0 +1,37 @@
+ConsistencyCheck: ArcConsistency
+ValueSelectionHeuristic: LeastConstrainingValue
+VariableSelectionHeuristic: Degree
+NakedCheck: NakedPairs
+
+Difficulty: Easy
+puzzle1:60 ms, 8 assignments, 4 backtracks,  Solved (PE50.txt)
+puzzle2:102 ms, 36 assignments, 31 backtracks,  Solved (PE32.txt)
+puzzle3:16 ms, 4 assignments, 3 backtracks,  Solved (PE34.txt)
+puzzle4:11 ms, 3 assignments, 1 backtracks,  Solved (PE37.txt)
+puzzle5:270 ms, 238 assignments, 236 backtracks,  Solved (PE41.txt)
+
+Solution found for 5/5puzzles
+average runTime: 91
+average number of assignments per puzzle: 57
+average number of backtracks per puzzle: 55
+
+Difficulty: Medium
+puzzle6:75084 ms, 23732 assignments, 23727 backtracks,  Solved (PM1.txt)
+puzzle7:-1489730691970 ms, 125742 assignments, 125712 backtracks,  Not a Solution(PM3.txt)
+puzzle8:86049 ms, 24054 assignments, 24049 backtracks,  Solved (PM5.txt)
+puzzle9:-1489731178022 ms, 109315 assignments, 109292 backtracks,  Not a Solution(PM2.txt)
+puzzle10:-1489731578024 ms, 116310 assignments, 116256 backtracks,  Not a Solution(PM4.txt)
+
+Solution found for 2/5puzzles
+average runTime: 80566
+average number of assignments per puzzle: 23893
+average number of backtracks per puzzle: 23888
+
+Difficulty: Hard
+puzzle11:-1489731978033 ms, 20749 assignments, 20723 backtracks,  Not a Solution(PH5.txt)
+puzzle12:-1489732378035 ms, 49318 assignments, 49127 backtracks,  Not a Solution(PH1.txt)
+puzzle13:-1489732778038 ms, 21138 assignments, 21006 backtracks,  Not a Solution(PH4.txt)
+puzzle14:-1489733178040 ms, 19435 assignments, 19298 backtracks,  Not a Solution(PH3.txt)
+puzzle15:123072 ms, 8926 assignments, 8926 backtracks,  Not a Solution(PH2.txt)
+
+Solution found for 0/5puzzles
